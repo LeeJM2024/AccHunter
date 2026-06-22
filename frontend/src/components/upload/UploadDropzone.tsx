@@ -20,10 +20,10 @@ export function UploadDropzone({ file, onFileSelect, disabled = false }: UploadD
 
   return (
     <div
-      className={`relative rounded-2xl border-2 border-dashed p-8 transition backdrop-blur-sm ${
+      className={`relative rounded-[8px] border border-dashed p-8 transition-colors ${
         dragging
-          ? "border-cyan-500/50 bg-cyan-500/20"
-          : "border-cyan-500/30 bg-cyan-500/10 hover:border-cyan-500/50 hover:bg-cyan-500/20"
+          ? "border-[#3E6FEF]/60 bg-[#EAF2FF]"
+          : "border-[rgba(89,110,138,0.5)] bg-[#F8FBFF] hover:border-[#3E6FEF]/50"
       } ${disabled ? "opacity-70" : ""}`}
       onDragOver={(event) => {
         event.preventDefault();
@@ -49,23 +49,23 @@ export function UploadDropzone({ file, onFileSelect, disabled = false }: UploadD
         disabled={disabled}
         className="absolute inset-0"
         onClick={() => inputRef.current?.click()}
-        aria-label="select-apk"
+        aria-label="选择 APK 文件"
       />
 
       <div className="pointer-events-none text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30">
-          <UploadCloud className="h-8 w-8 text-cyan-400" />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[8px] border border-[#3E6FEF]/25 bg-white">
+          <UploadCloud className="h-8 w-8 text-[#3E6FEF]" />
         </div>
-        <p className="mt-4 text-base font-semibold text-white">拖拽 APK 或点击选择文件</p>
-        <p className="mt-1.5 text-sm text-slate-400">支持 .apk 格式，单个文件上传</p>
+        <p className="mt-4 text-base font-semibold text-[#0F172A]">拖拽 APK 或点击选择文件</p>
+        <p className="mt-1.5 text-sm leading-6 text-[#405064]">支持 .apk 格式，单个文件上传</p>
 
         {file && (
-          <div className="mx-auto mt-6 max-w-md rounded-xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 backdrop-blur-sm px-4 py-3 text-left">
-            <p className="inline-flex items-center gap-2 text-sm text-white">
-              <FileArchive className="h-4 w-4 text-emerald-400" />
+          <div className="mx-auto mt-6 max-w-md rounded-[8px] border border-[rgba(62,111,239,0.24)] bg-white px-4 py-3 text-left">
+            <p className="inline-flex items-center gap-2 text-sm text-[#0F172A]">
+              <FileArchive className="h-4 w-4 text-[#3E6FEF]" />
               {file.name}
             </p>
-            <p className="mt-1 text-xs text-emerald-300/80">{formatBytes(file.size)}</p>
+            <p className="mt-1 font-mono text-[13px] text-[#405064]">{formatBytes(file.size)}</p>
           </div>
         )}
       </div>

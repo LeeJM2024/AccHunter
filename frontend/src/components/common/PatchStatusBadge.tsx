@@ -1,11 +1,11 @@
 import type { PatchStatusSemantic } from "../../types/domain";
 
 const colorMap: Record<PatchStatusSemantic["color"], string> = {
-  danger: "border-rose-400/45 bg-rose-500/15 text-rose-200",
-  warn: "border-amber-400/45 bg-amber-500/15 text-amber-200",
-  safe: "border-emerald-400/45 bg-emerald-500/15 text-emerald-200",
-  muted: "border-slate-400/45 bg-slate-500/15 text-slate-200",
-  unknown: "border-cyan-400/45 bg-cyan-500/15 text-cyan-200",
+  danger: "border-rose-200 bg-rose-50 text-rose-700",
+  warn: "border-amber-200 bg-amber-50 text-amber-700",
+  safe: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  muted: "border-slate-200 bg-slate-50 text-slate-600",
+  unknown: "border-sky-200 bg-sky-50 text-sky-700",
 };
 
 export function PatchStatusBadge({ status }: { status: PatchStatusSemantic }): JSX.Element {

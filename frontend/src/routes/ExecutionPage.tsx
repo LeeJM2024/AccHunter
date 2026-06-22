@@ -38,8 +38,11 @@ export function ExecutionPage(): JSX.Element {
   if (!taskId) {
     return (
       <Panel title="执行监控">
-        <p className="text-sm text-zinc-500">任务 ID 缺失，请先前往新建任务页面。</p>
-        <Link to="/task/new" className="mt-6 inline-flex items-center gap-2 rounded-xl border border-zinc-700/50 bg-zinc-800/40 px-5 py-3 text-sm text-zinc-200 transition-all hover:border-zinc-600/60 hover:bg-zinc-700/40 hover:text-white">
+        <p className="text-sm text-[#405064]">任务 ID 缺失，请先前往新建任务页面。</p>
+        <Link
+          to="/task/new"
+          className="mt-6 inline-flex items-center gap-2 rounded-[6px] border border-[#3E6FEF] bg-[#3E6FEF] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#2557D6]"
+        >
           去新建任务
         </Link>
       </Panel>
@@ -63,18 +66,21 @@ export function ExecutionPage(): JSX.Element {
         <Panel title="流程状态">
           <div className="space-y-4 text-sm">
             <div className="flex items-center justify-between">
-              <span className="text-zinc-500">任务阶段</span>
+              <span className="text-[#405064]">任务阶段</span>
               <StageBadge stage={taskStage} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-zinc-500">日志条数</span>
-              <span className="text-zinc-300">{logs.length}</span>
+              <span className="text-[#405064]">日志条数</span>
+              <span className="font-mono text-[#0F172A]">{logs.length}</span>
             </div>
           </div>
         </Panel>
 
         <div className="flex flex-wrap gap-3">
-          <Link to={`/report/${taskId}`} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700/50 bg-zinc-800/40 px-5 py-3 text-sm text-zinc-200 transition-all hover:border-zinc-600/60 hover:bg-zinc-700/40 hover:text-white">
+          <Link
+            to={`/report/${taskId}`}
+            className="inline-flex items-center gap-2 rounded-[6px] border border-[#3E6FEF] bg-[#3E6FEF] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#2557D6]"
+          >
             <FileText className="h-4 w-4" />
             立即查看报告
           </Link>
@@ -83,7 +89,7 @@ export function ExecutionPage(): JSX.Element {
             onClick={() => {
               void connectExecution(taskId);
             }}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-700/50 bg-zinc-800/40 px-5 py-3 text-sm text-zinc-200 transition-all hover:border-zinc-600/60 hover:bg-zinc-700/40 hover:text-white"
+            className="inline-flex items-center gap-2 rounded-[6px] border border-[rgba(62,111,239,0.34)] bg-white px-5 py-3 text-sm font-semibold text-[#2557D6] transition-colors hover:bg-[#EAF2FF]"
           >
             <ArrowRightCircle className="h-4 w-4" />
             重建监控连接
@@ -92,7 +98,7 @@ export function ExecutionPage(): JSX.Element {
       </div>
 
       <div className="space-y-6">
-        <Panel title="扫描进度" className="bg-zinc-900/50">
+        <Panel title="扫描进度">
           <ScanProgress
             logs={logs}
             taskStage={taskStage}

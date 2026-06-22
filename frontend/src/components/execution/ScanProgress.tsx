@@ -28,7 +28,7 @@ const SCAN_PHASES: ScanPhase[] = [
     icon: <FileSearch className="h-4 w-4" />,
     startWeight: 8,
     endWeight: 35,
-    keywords: ["第三方库", "组件识别", "库版本", "library"],
+    keywords: ["第三方库", "组件识别", "库版本", "library", "libhunter"],
   },
   {
     key: "phunter",
@@ -36,7 +36,7 @@ const SCAN_PHASES: ScanPhase[] = [
     icon: <Shield className="h-4 w-4" />,
     startWeight: 35,
     endWeight: 85,
-    keywords: ["补丁", "漏洞", "验证", "patch", "CVE"],
+    keywords: ["补丁", "漏洞", "验证", "patch", "CVE", "phunter"],
   },
   {
     key: "report",
@@ -81,13 +81,16 @@ export function ScanProgress({
   const isDone = taskStage === "REPORT_READY";
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-500/20">
-            <ScanLine className="h-4 w-4 text-cyan-400" />
+    <section className="space-y-5 rounded-[10px] border border-[rgba(129,151,181,0.28)] bg-white p-5 shadow-[0_8px_18px_rgba(49,88,153,0.08)]">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#C8D8F4] bg-[#F3F7FE] text-[#3E6FEF]">
+            <ScanLine className="h-5 w-5" />
           </div>
-          <h3 className="text-sm font-semibold text-white">扫描进度</h3>
+          <div>
+            <h3 className="text-base font-semibold text-[#0F172A]">扫描进度</h3>
+            <p className="mt-0.5 text-xs leading-5 text-[#405064]">实时跟踪 APK 分析、组件识别、补丁验证与报告生成状态</p>
+          </div>
         </div>
         <ConnectionBadge wsState={wsState} isPollingFallback={isPollingFallback} />
       </div>
@@ -96,20 +99,21 @@ export function ScanProgress({
 
       <ProgressBar phase={progress.phase} progress={progress.percent} isError={isError} isDone={isDone} />
 
-      <div className="rounded-xl border border-zinc-700/30 bg-zinc-800/30 p-4">
+      <div className="rounded-[8px] border border-[#D8E3F3] bg-[#F8FBFF] p-4">
         <div className="flex items-center gap-3">
-          <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${isError ? "bg-rose-500/20 text-rose-400" : isDone ? "bg-emerald-500/20 text-emerald-400" : "bg-cyan-500/20 text-cyan-400"}`}>
+          <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${phaseTone(isError, isDone)}`}>
             {isError ? <AlertTriangle className="h-5 w-5" /> : isDone ? <CheckCircle2 className="h-5 w-5" /> : progress.phase.icon}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-zinc-200">{progress.phase.label}</p>
+            <p className="truncate text-sm font-semibold text-[#0F172A]">{progress.phase.label}</p>
+            <p className="mt-0.5 text-xs leading-5 text-[#405064]">{statusDescription(taskStage, isError, isDone)}</p>
           </div>
-          {!isDone && !isError && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-cyan-400" />}
+          {!isDone && !isError && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-[#3E6FEF]" />}
         </div>
       </div>
 
       {errorMessage && (
-        <div className="rounded-xl border border-rose-500/30 bg-rose-500/15 px-4 py-3 text-sm text-rose-300">
+        <div className="rounded-[8px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
           <p className="inline-flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 shrink-0" />
             {errorMessage}
@@ -118,14 +122,14 @@ export function ScanProgress({
       )}
 
       {isDone && (
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+        <div className="rounded-[8px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
           <p className="inline-flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
-            扫描已完成。首次完成会自动打开报告；后续可点击左侧按钮查看。
+            扫描已完成。首次完成会自动打开报告，后续可从左侧任务入口查看。
           </p>
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -202,29 +206,29 @@ function formatNumber(value: number): string {
 function EstimateCard({ estimate, isDone, isError }: { estimate: TimeEstimate; isDone: boolean; isError: boolean }): JSX.Element {
   const confidenceText = estimate.confidence === "high" ? "高" : estimate.confidence === "medium" ? "中" : "低";
   return (
-    <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-4">
+    <div className="rounded-[8px] border border-[#C8D8F4] bg-[#F3F7FE] p-4">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-400/15 text-cyan-300">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#B8CEF5] bg-white text-[#3E6FEF]">
             <Clock3 className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-cyan-100">预估耗时</p>
-            <p className="mt-0.5 text-xs text-cyan-100/65">基于 DEX 静态复杂度与本机历史耗时校准</p>
+            <p className="text-sm font-semibold text-[#0F172A]">预计耗时</p>
+            <p className="mt-0.5 text-xs leading-5 text-[#405064]">基于 DEX 静态复杂度与本机历史耗时校准</p>
           </div>
         </div>
-        <div className="text-right">
-          <p className={`text-2xl font-bold tabular-nums ${isError ? "text-rose-300" : isDone ? "text-emerald-300" : "text-cyan-200"}`}>
+        <div className="text-left sm:text-right">
+          <p className={`text-2xl font-bold tabular-nums ${isError ? "text-rose-600" : isDone ? "text-emerald-600" : "text-[#2557D6]"}`}>
             {isDone ? "已完成" : `约 ${estimate.remainingMinutes} 分钟`}
           </p>
-          <p className="mt-0.5 text-xs text-slate-400">
+          <p className="mt-0.5 text-xs leading-5 text-[#405064]">
             总耗时约 {estimate.totalMinutes} 分钟 · 置信度 {confidenceText} · {estimate.model}
           </p>
         </div>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {estimate.basis.slice(0, 4).map((item) => (
-          <span key={item} className="rounded-full border border-cyan-400/15 bg-black/20 px-2.5 py-1 text-[11px] text-cyan-100/75">
+          <span key={item} className="rounded-full border border-[#C8D8F4] bg-white px-2.5 py-1 text-[12px] text-[#405064]">
             {item}
           </span>
         ))}
@@ -275,51 +279,73 @@ function progressFromLogs(logs: LogEntry[]): number {
 }
 
 function ProgressBar({ progress, phase, isError, isDone }: { progress: number; phase: ScanPhase; isError: boolean; isDone: boolean }): JSX.Element {
-  const barColor = isError ? "from-rose-500 to-rose-400" : isDone ? "from-emerald-500 to-emerald-400" : "from-cyan-500 via-blue-500 to-indigo-500";
+  const barColor = isError ? "bg-rose-500" : isDone ? "bg-emerald-500" : "bg-[#3E6FEF]";
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-zinc-400">扫描进度</span>
-        <span className={`font-mono font-bold tabular-nums ${isError ? "text-rose-400" : isDone ? "text-emerald-400" : "text-cyan-300"}`}>{progress}%</span>
+        <span className="font-medium text-[#405064]">整体进度</span>
+        <span className={`font-mono font-bold tabular-nums ${isError ? "text-rose-600" : isDone ? "text-emerald-600" : "text-[#2557D6]"}`}>{progress}%</span>
       </div>
-      <div className="relative h-3 overflow-hidden rounded-full bg-zinc-800/80 ring-1 ring-zinc-700/50">
-        <div className={`h-full rounded-full bg-gradient-to-r ${barColor} transition-all duration-700`} style={{ width: `${Math.max(progress, 2)}%` }}>
-          {!isDone && !isError && progress < 100 && <div className="h-full animate-pulse bg-white/10" />}
+      <div className="relative h-3 overflow-hidden rounded-full bg-[#E4ECF8] ring-1 ring-[#CFDCEF]">
+        <div className={`h-full rounded-full ${barColor} transition-all duration-700`} style={{ width: `${Math.max(progress, 2)}%` }}>
+          {!isDone && !isError && progress < 100 && <div className="h-full animate-pulse bg-white/20" />}
         </div>
         {SCAN_PHASES.slice(0, 5).map((p) => (
-          <span key={p.key} className={`absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full border ${p.startWeight <= progress || p.key === phase.key ? "border-emerald-400 bg-emerald-400" : "border-zinc-600 bg-zinc-800"}`} style={{ left: `${p.startWeight}%` }} />
+          <span
+            key={p.key}
+            className={`absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full border ${
+              p.startWeight <= progress || p.key === phase.key ? "border-white bg-[#3E6FEF] shadow-[0_0_0_2px_rgba(62,111,239,0.22)]" : "border-[#B9C7DA] bg-white"
+            }`}
+            style={{ left: `${p.startWeight}%` }}
+          />
         ))}
       </div>
-      <div className="grid grid-cols-5 text-center text-[10px] text-zinc-500">
+      <div className="grid grid-cols-5 gap-1 text-center text-[12px] leading-4 text-[#627188]">
         {SCAN_PHASES.map((p) => (
-          <span key={p.key} className={p.key === phase.key ? "text-emerald-400" : ""}>{p.label}</span>
+          <span key={p.key} className={p.key === phase.key ? "font-semibold text-[#2557D6]" : ""}>
+            {p.label}
+          </span>
         ))}
       </div>
     </div>
   );
 }
 
+function phaseTone(isError: boolean, isDone: boolean): string {
+  if (isError) return "border border-rose-200 bg-rose-50 text-rose-600";
+  if (isDone) return "border border-emerald-200 bg-emerald-50 text-emerald-600";
+  return "border border-[#C8D8F4] bg-white text-[#3E6FEF]";
+}
+
+function statusDescription(taskStage: TaskStage, isError: boolean, isDone: boolean): string {
+  if (isError) return "执行出现异常，请查看下方错误信息或任务日志。";
+  if (isDone) return "验证链路完成，报告与证据已可查看。";
+  if (taskStage === "QUEUED") return "任务已入队，等待调度执行。";
+  if (taskStage === "UPLOADING") return "APK 正在上传并准备静态分析。";
+  return "正在汇总组件、漏洞与补丁证据。";
+}
+
 function ConnectionBadge({ wsState, isPollingFallback }: { wsState: WsConnectionState; isPollingFallback: boolean }): JSX.Element | null {
   if (isPollingFallback) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-400">
+      <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[12px] font-medium text-amber-700">
         <WifiOff className="h-3 w-3" />
-        降级轮询
+        轮询同步
       </span>
     );
   }
   if (wsState === "CONNECTED") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[10px] font-medium text-emerald-400">
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-        实时
+      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[12px] font-medium text-emerald-700">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+        实时连接
       </span>
     );
   }
   if (wsState === "CONNECTING" || wsState === "RECONNECTING") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-400">
+      <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[12px] font-medium text-amber-700">
         <Loader2 className="h-3 w-3 animate-spin" />
         连接中
       </span>

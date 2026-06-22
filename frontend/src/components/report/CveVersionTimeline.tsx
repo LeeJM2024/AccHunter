@@ -43,50 +43,36 @@ function versionState(version: string, timeline: CveVersionTimelineModel): {
   };
 }
 
-function nodeClass(version: string, timeline: CveVersionTimelineModel): string {
-  const isCurrent = version === timeline.detectedVersion;
-  const isAffected = timeline.cves.some((item) => item.affectedVersions.includes(version));
-  const isFixed = timeline.cves.some((item) => item.fixedVersion === version);
-
-  if (isCurrent && isAffected) return "border-cyan-100 bg-cyan-400 text-slate-950 ring-4 ring-rose-400/30 shadow-[0_0_22px_rgba(34,211,238,0.5)]";
-  if (isCurrent) return "border-cyan-200 bg-cyan-500 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,0.42)]";
-  if (isFixed) return "border-emerald-300 bg-emerald-500/75 text-slate-950";
-  if (isAffected) return "border-amber-200 bg-amber-400/80 text-slate-950";
-  return "border-slate-600 bg-slate-900 text-slate-300";
-}
-
 function VersionMarker({ version, timeline }: { version: string; timeline: CveVersionTimelineModel }): JSX.Element {
   const { isCurrent, isAffected, isFixed } = versionState(version, timeline);
 
   if (isCurrent) {
     return (
-      <div className={`grid h-6 w-6 place-items-center rounded-full border-2 ${nodeClass(version, timeline)}`}>
-        <div className="h-2.5 w-2.5 rounded-full bg-slate-950/80" />
+      <div className={`grid h-6 w-6 place-items-center rounded-full border-2 ${isAffected ? "border-rose-500 bg-rose-50" : "border-[#3E6FEF] bg-[#EAF2FF]"}`}>
+        <div className={`h-2.5 w-2.5 rounded-full ${isAffected ? "bg-rose-500" : "bg-[#3E6FEF]"}`} />
       </div>
     );
   }
 
   if (isFixed) {
     return (
-      <div className="relative h-5 w-5">
-        <div className="absolute inset-0 bg-emerald-400/85 shadow-[0_0_14px_rgba(52,211,153,0.28)] [clip-path:polygon(25%_5%,75%_5%,100%_50%,75%_95%,25%_95%,0_50%)]" />
-        <CheckCircle2 className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 text-slate-950/85" />
+      <div className="grid h-5 w-5 place-items-center rounded-full border border-emerald-300 bg-emerald-50 text-emerald-700">
+        <CheckCircle2 className="h-3 w-3" />
       </div>
     );
   }
 
   if (isAffected) {
     return (
-      <div className="relative h-5 w-5">
-        <div className="absolute inset-1 rotate-45 rounded-[4px] border border-amber-100/80 bg-amber-400/85 shadow-[0_0_12px_rgba(251,191,36,0.18)]" />
-        <div className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-950/70" />
+      <div className="grid h-5 w-5 place-items-center rounded-full border border-amber-300 bg-amber-50">
+        <div className="h-2 w-2 rounded-full bg-amber-500" />
       </div>
     );
   }
 
   return (
-    <div className="grid h-4 w-4 place-items-center rounded-full border border-slate-500/70 bg-slate-800 shadow-[0_0_8px_rgba(148,163,184,0.12)]">
-      <div className="h-1.5 w-1.5 rounded-full bg-slate-400/80" />
+    <div className="grid h-4 w-4 place-items-center rounded-full border border-[#B9C7DA] bg-white">
+      <div className="h-1.5 w-1.5 rounded-full bg-[#8493A8]" />
     </div>
   );
 }
@@ -205,33 +191,33 @@ function TimelineCard({ timeline }: { timeline: CveVersionTimelineModel }): JSX.
   }, [chartWidth, currentIndex, positionedEvents, timeline.libraryName, versions.length]);
 
   return (
-    <article className="rounded-xl border border-slate-700/70 bg-slate-950/55 p-4">
+    <article className="rounded-[10px] border border-[#D8E3F3] bg-[#F8FBFF] p-4">
       <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-slate-100">{timeline.libraryName}</h3>
-            <span className="rounded-full border border-cyan-300/35 bg-cyan-400/10 px-2 py-0.5 text-xs text-cyan-100">
+            <h3 className="text-sm font-semibold text-[#0F172A]">{timeline.libraryName}</h3>
+            <span className="rounded-full border border-[#C8D8F4] bg-white px-2 py-0.5 text-xs text-[#2557D6]">
               当前版本 {timeline.detectedVersion}
             </span>
           </div>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs leading-5 text-[#405064]">
             {affectedNow > 0 ? `当前版本命中 ${affectedNow} 个 CVE 影响区间` : "当前版本未落入已知影响区间"}
           </p>
         </div>
         <div className="grid gap-2 sm:grid-cols-2 lg:min-w-[360px]">
-          <div className={`rounded-lg border px-3 py-2 ${affectedNow > 0 ? "border-rose-300/45 bg-rose-500/10" : "border-emerald-300/35 bg-emerald-500/10"}`}>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <Crosshair className="h-3.5 w-3.5 text-cyan-200" />
+          <div className={`rounded-[8px] border px-3 py-2 ${affectedNow > 0 ? "border-rose-200 bg-rose-50" : "border-emerald-200 bg-emerald-50"}`}>
+            <div className="flex items-center gap-2 text-xs text-[#405064]">
+              <Crosshair className="h-3.5 w-3.5 text-[#3E6FEF]" />
               当前命中版本
             </div>
-            <p className="mt-1 font-mono text-lg font-semibold text-cyan-100">{timeline.detectedVersion}</p>
+            <p className={`mt-1 font-mono text-lg font-semibold ${affectedNow > 0 ? "text-rose-700" : "text-emerald-700"}`}>{timeline.detectedVersion}</p>
           </div>
-          <div className="rounded-lg border border-slate-700/70 bg-slate-900/65 px-3 py-2">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <ShieldAlert className="h-3.5 w-3.5 text-amber-200" />
+          <div className="rounded-[8px] border border-[#D8E3F3] bg-white px-3 py-2">
+            <div className="flex items-center gap-2 text-xs text-[#405064]">
+              <ShieldAlert className="h-3.5 w-3.5 text-amber-600" />
               建议关注
             </div>
-            <p className="mt-1 text-sm font-semibold text-slate-100">
+            <p className="mt-1 text-sm font-semibold text-[#0F172A]">
               {nextFixVersion ? `至少升级到 ${nextFixVersion}` : `${timeline.cves.length} 个 CVE`}
             </p>
           </div>
@@ -240,13 +226,13 @@ function TimelineCard({ timeline }: { timeline: CveVersionTimelineModel }): JSX.
 
       <div ref={scrollRef} className="mt-4 overflow-x-auto pb-2">
         <div className="relative" style={{ height: chartHeight, width: chartWidth }}>
-          <div className="absolute left-[4%] right-[4%] top-[92px] h-px bg-slate-700" />
+          <div className="absolute left-[4%] right-[4%] top-[92px] h-px bg-[#C8D8F4]" />
           {currentIndex >= 0 && (
             <div
-              className="absolute bottom-4 top-0 w-px bg-cyan-300/75 shadow-[0_0_18px_rgba(34,211,238,0.6)]"
+              className="absolute bottom-4 top-0 w-px bg-[#3E6FEF]"
               style={{ left: `${percent(currentIndex, versions.length)}%` }}
             >
-              <span className="absolute -left-14 top-2 whitespace-nowrap rounded-lg border border-cyan-300/55 bg-cyan-400/15 px-3 py-1 text-xs font-semibold text-cyan-50">
+              <span className="absolute -left-14 top-2 whitespace-nowrap rounded-[6px] border border-[#C8D8F4] bg-white px-3 py-1 text-xs font-semibold text-[#2557D6]">
                 当前使用 {timeline.detectedVersion}
               </span>
             </div>
@@ -256,7 +242,7 @@ function TimelineCard({ timeline }: { timeline: CveVersionTimelineModel }): JSX.
             {positionedEvents.map((event) => {
               const labelCenter = event.labelLeft + EVENT_LABEL_WIDTH / 2;
               const branchY = event.labelTop - 14;
-              const stroke = event.kind === "introduced" ? "rgba(251,113,133,0.42)" : "rgba(52,211,153,0.42)";
+              const stroke = event.kind === "introduced" ? "rgba(225,29,72,0.35)" : "rgba(5,150,105,0.35)";
               return (
                 <path
                   key={`${timeline.libraryName}-${event.kind}-${event.version}-${event.cveId}-branch`}
@@ -274,10 +260,10 @@ function TimelineCard({ timeline }: { timeline: CveVersionTimelineModel }): JSX.
           {positionedEvents.map((event) => (
             <div
               key={`${timeline.libraryName}-${event.kind}-${event.version}-${event.cveId}`}
-              className={`absolute flex w-[176px] items-center gap-1 whitespace-nowrap rounded-md border px-2 py-1 text-[10px] font-semibold ${
+              className={`absolute flex w-[176px] items-center gap-1 whitespace-nowrap rounded-[6px] border px-2 py-1 text-[12px] font-semibold ${
                 event.kind === "introduced"
-                  ? "border-rose-300/45 bg-rose-500/10 text-rose-100"
-                  : "border-emerald-300/45 bg-emerald-500/10 text-emerald-100"
+                  ? "border-rose-200 bg-rose-50 text-rose-700"
+                  : "border-emerald-200 bg-emerald-50 text-emerald-700"
               }`}
               style={{ left: event.labelLeft, top: event.labelTop }}
               title={`${event.version} ${event.kind === "introduced" ? "出现" : "修复"} ${event.cveId}`}
@@ -294,7 +280,7 @@ function TimelineCard({ timeline }: { timeline: CveVersionTimelineModel }): JSX.
               style={{ left: `${percent(index, versions.length)}%` }}
             >
               <VersionMarker version={version} timeline={timeline} />
-              <span className={`mt-2 whitespace-nowrap font-mono text-xs ${version === timeline.detectedVersion ? "font-semibold text-cyan-100" : "text-slate-300"}`}>
+              <span className={`mt-2 whitespace-nowrap font-mono text-xs ${version === timeline.detectedVersion ? "font-semibold text-[#2557D6]" : "text-[#405064]"}`}>
                 {version}
               </span>
             </div>
@@ -306,19 +292,19 @@ function TimelineCard({ timeline }: { timeline: CveVersionTimelineModel }): JSX.
         {timeline.cves.map((item) => (
           <div
             key={`${timeline.libraryName}-${item.cveId}-detail`}
-            className={`rounded-lg border p-2 text-xs ${
+            className={`rounded-[8px] border p-2 text-xs ${
               item.currentAffected
-                ? "border-rose-400/45 bg-rose-500/10"
-                : "border-slate-700/70 bg-slate-900/60"
+                ? "border-rose-200 bg-rose-50"
+                : "border-[#D8E3F3] bg-white"
             }`}
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="font-mono font-semibold text-slate-100">{item.cveId}</span>
-              <span className={item.currentAffected ? "text-rose-200" : "text-slate-400"}>
+              <span className="font-mono font-semibold text-[#0F172A]">{item.cveId}</span>
+              <span className={item.currentAffected ? "text-rose-700" : "text-[#405064]"}>
                 {item.currentAffected ? "当前受影响" : "未命中当前版本"}
               </span>
             </div>
-            <p className="mt-1 text-slate-400">{rangeLabel(item)}</p>
+            <p className="mt-1 text-[#405064]">{rangeLabel(item)}</p>
           </div>
         ))}
       </div>
@@ -346,14 +332,14 @@ export function CveVersionTimeline({ timelines }: CveVersionTimelineProps): JSX.
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-slate-300">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <p className="max-w-3xl text-sm leading-6 text-[#405064]">
           按第三方库版本顺序标注 CVE 出现与修复节点，突出当前 APK 使用版本的位置。
         </p>
-        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-          <span className="inline-flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-cyan-400" />当前版本</span>
-          <span className="inline-flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-rose-400" />CVE 出现</span>
-          <span className="inline-flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />CVE 修复</span>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-[#405064]">
+          <span className="inline-flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-[#3E6FEF]" />当前版本</span>
+          <span className="inline-flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-rose-500" />CVE 出现</span>
+          <span className="inline-flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />CVE 修复</span>
         </div>
       </div>
 
@@ -367,14 +353,14 @@ export function CveVersionTimeline({ timelines }: CveVersionTimelineProps): JSX.
                 key={`${timeline.libraryName}-${timeline.detectedVersion}`}
                 type="button"
                 onClick={() => setSelectedLibrary(timeline.libraryName)}
-                className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-2 rounded-[6px] border px-3 py-2 text-xs font-semibold transition ${
                   selected
-                    ? "border-cyan-300/70 bg-cyan-400/15 text-cyan-50 shadow-[0_0_18px_rgba(34,211,238,0.16)]"
-                    : "border-slate-700 bg-slate-900/65 text-slate-300 hover:border-cyan-300/45 hover:text-cyan-100"
+                    ? "border-[#3E6FEF] bg-[#EAF2FF] text-[#2557D6]"
+                    : "border-[#D8E3F3] bg-white text-[#405064] hover:bg-[#F8FBFF] hover:text-[#2557D6]"
                 }`}
               >
                 <span>{timeline.libraryName}</span>
-                <span className={affectedNow > 0 ? "text-rose-200" : "text-slate-500"}>
+                <span className={affectedNow > 0 ? "text-rose-700" : "text-[#627188]"}>
                   {affectedNow}/{timeline.cves.length}
                 </span>
               </button>
@@ -384,7 +370,7 @@ export function CveVersionTimeline({ timelines }: CveVersionTimelineProps): JSX.
       )}
 
       {visibleTimelines.length === 0 && (
-        <div className="rounded-xl border border-slate-700/70 bg-slate-950/45 px-4 py-6 text-sm text-slate-400">
+        <div className="rounded-[8px] border border-[#D8E3F3] bg-[#F8FBFF] px-4 py-6 text-sm text-[#405064]">
           当前报告暂无可绘制的 CVE 版本影响范围。
         </div>
       )}
@@ -392,7 +378,7 @@ export function CveVersionTimeline({ timelines }: CveVersionTimelineProps): JSX.
       {activeTimeline && <TimelineCard timeline={activeTimeline} />}
 
       {visibleTimelines.length > 0 && (
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-xs text-[#627188]">
           <GitBranch className="h-3.5 w-3.5" />
           版本节点来自本地 CVE 知识库；红色标记表示该 CVE 首个受影响版本，绿色标记表示对应修复版本。
         </div>
