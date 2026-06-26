@@ -3,7 +3,7 @@
   "source_label": "生态参考情报",
   "scope": "基于本项目 cve_kb.json 的 Android/Java 第三方库 CVE 知识库，不代表当前 APK 已命中",
   "methodology": "以 data/cve_kb.json 为底表，全量聚合其中出现的 CVE 与第三方组件；CVE 说明、CVSS 与参考链接优先来自 NVD CVE API / CVE Program 官方记录，缺失时使用可解释 fallback；排序按严重性、CVSS、影响版本数量、补丁资产完整度和组件风险密度计算。",
-  "generated_by": "ACCHunter online enrichment using NVD CVE API plus local cve_kb.json",
+  "generated_by": "PierHunter online enrichment using NVD CVE API plus local cve_kb.json",
   "cve_details": {
     "CVE-2012-2098": {
       "title": "Algorithmic complexity vulnerability in the sorting algorithms in bzip2 compressing stream (BZip2CompressorOutputStream) in Apache Commons Compress before 1.4.1",

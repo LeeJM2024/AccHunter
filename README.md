@@ -1,6 +1,6 @@
-# ACCHunter 用户使用说明
+# PierHunter 用户使用说明
 
-ACCHunter 是一个面向 Android APK 的安全分析系统。用户可以通过 Web 前端上传 APK，系统会在后端执行第三方库识别和漏洞分析，并在页面中显示任务状态、实时日志和最终报告。
+PierHunter 是一个面向 Android APK 的安全分析系统。用户可以通过 Web 前端上传 APK，系统会在后端执行第三方库识别和漏洞分析，并在页面中显示任务状态、实时日志和最终报告。
 
 系统包含：
 
@@ -81,11 +81,11 @@ data/cve_kb.json              漏洞知识库
 版本级缓存来自 `data/tpl_dex`，输出到 `data/lib_pickles_cache`。
 
 ```bash
-mkdir -p /tmp/acchunter-empty-apks outputs/libhunter_prewarm
+mkdir -p /tmp/pierhunter-empty-apks outputs/libhunter_prewarm
 
 python3 LibHunter/LibHunter.py detect_all \
   -o outputs/libhunter_prewarm \
-  -af /tmp/acchunter-empty-apks \
+  -af /tmp/pierhunter-empty-apks \
   -p ${LIBHUNTER_PROCESSES:-11} \
   -ld data/tpl_dex
 ```
@@ -95,7 +95,7 @@ python3 LibHunter/LibHunter.py detect_all \
 ```bash
 python3 LibHunter/LibHunter.py detect_all \
   -o outputs/libhunter_prewarm \
-  -af /tmp/acchunter-empty-apks \
+  -af /tmp/pierhunter-empty-apks \
   -p ${LIBHUNTER_PROCESSES:-11} \
   -ld data/tpl_dex \
   -lf data/tpl_jar
@@ -104,7 +104,7 @@ python3 LibHunter/LibHunter.py detect_all \
 说明：
 
 - `-ld data/tpl_dex`：第三方库 dex 特征目录。
-- `-af /tmp/acchunter-empty-apks`：空 APK 目录，用于只触发模板 pickle 构建。
+- `-af /tmp/pierhunter-empty-apks`：空 APK 目录，用于只触发模板 pickle 构建。
 - `-p`：并行进程数，数值越高越快，但 CPU 占用越高。
 
 ## 4. 生成 LibHunter 骨架级缓存
@@ -215,7 +215,7 @@ PHUNTER_CACHE_DIR=/app/data/phunter_soot_cache
 确认缓存准备好后，再构建镜像：
 
 ```bash
-docker compose -p acchunter build
+docker compose -p pierhunter build
 ```
 
 构建时可以观察 build context 大小。如果 `.dockerignore` 生效，build context 不应该是十几 GB。
@@ -223,7 +223,7 @@ docker compose -p acchunter build
 ## 10. 启动系统
 
 ```bash
-docker compose -p acchunter up -d
+docker compose -p pierhunter up -d
 ```
 
 启动后访问：
@@ -235,7 +235,7 @@ http://127.0.0.1:8000/
 查看服务状态：
 
 ```bash
-docker compose -p acchunter ps
+docker compose -p pierhunter ps
 ```
 
 ## 前端使用流程
@@ -283,7 +283,7 @@ LIBHUNTER_PROCESSES=4
 修改后重启 worker：
 
 ```bash
-docker compose -p acchunter up -d --force-recreate worker
+docker compose -p pierhunter up -d --force-recreate worker
 ```
 
 ## WebSocket 日志
@@ -297,7 +297,7 @@ docker compose -p acchunter up -d --force-recreate worker
 如果页面显示 `WS 重连中` 或 `WebSocket 连接出现异常`，可以先检查 API 日志：
 
 ```bash
-docker compose -p acchunter logs --tail=100 api
+docker compose -p pierhunter logs --tail=100 api
 ```
 
 正常情况下日志中会出现：
@@ -312,13 +312,13 @@ connection open
 查看 API 日志：
 
 ```bash
-docker compose -p acchunter logs -f api
+docker compose -p pierhunter logs -f api
 ```
 
 查看 worker 日志：
 
 ```bash
-docker compose -p acchunter logs -f worker
+docker compose -p pierhunter logs -f worker
 ```
 
 查看资源占用：
@@ -330,25 +330,25 @@ docker stats
 停止系统：
 
 ```bash
-docker compose -p acchunter stop
+docker compose -p pierhunter stop
 ```
 
 再次启动系统：
 
 ```bash
-docker compose -p acchunter up -d
+docker compose -p pierhunter up -d
 ```
 
 如果页面能打开但任务一直排队，通常是 worker 没启动：
 
 ```bash
-docker compose -p acchunter up -d worker
+docker compose -p pierhunter up -d worker
 ```
 
-如果 `acchunter-worker-1` CPU 很高，可以先暂停 worker：
+如果 `pierhunter-worker-1` CPU 很高，可以先暂停 worker：
 
 ```bash
-docker stop acchunter-worker-1
+docker stop pierhunter-worker-1
 ```
 
 ## API 调用示例
@@ -396,13 +396,13 @@ docker system prune -a --volumes
 如果只是停止系统，使用：
 
 ```bash
-docker compose -p acchunter stop
+docker compose -p pierhunter stop
 ```
 
-如果只是删除 acchunter 容器但保留项目文件：
+如果只是删除 pierhunter 容器但保留项目文件：
 
 ```bash
-docker compose -p acchunter down
+docker compose -p pierhunter down
 ```
 
 项目根目录下的 `data/` 是宿主机文件夹，不属于镜像，不应该删除。

@@ -306,7 +306,7 @@ def _build_local_intelligence_artifact(
         "schema_version": 1,
         "status": "placeholder",
         "provider": "local-placeholder",
-        "model": "acchunter-intelligence-placeholder-v1",
+        "model": "pierhunter-intelligence-placeholder-v1",
         "generated_at": _utc_iso(),
         "input_contract": {
             "required_fields": [
@@ -370,7 +370,7 @@ def _build_agent_messages(report: dict[str, Any], analysis_artifacts: dict[str, 
         },
     }
     system_prompt = (
-        "你是 ACCHunter 的安全分析智能体。只能依据输入报告和证据链作结论，"
+        "你是 PierHunter 的安全分析智能体。只能依据输入报告和证据链作结论，"
         "不要编造未提供的漏洞命中、版本或修复证据。你必须只输出一个合法 JSON 对象，"
         "不要输出 Markdown、代码块、解释性前后缀或自然语言寒暄。"
     )
@@ -604,7 +604,7 @@ def _call_real_intelligence_api(
     api_key = _env_str("INTELLIGENCE_API_KEY")
     endpoint = _env_str("INTELLIGENCE_API_URL")
     provider = _env_str("INTELLIGENCE_PROVIDER", "custom-agent")
-    model = _env_str("INTELLIGENCE_MODEL", "acchunter-agent")
+    model = _env_str("INTELLIGENCE_MODEL", "pierhunter-agent")
     timeout = _env_int("INTELLIGENCE_API_TIMEOUT", 60)
     api_type = _env_str("INTELLIGENCE_API_TYPE", "chat_completions").lower().replace("-", "_")
 

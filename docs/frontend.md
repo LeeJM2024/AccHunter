@@ -1,8 +1,8 @@
-# ACCHunter 前端 README
+# PierHunter 前端 README
 
 ## 定位
 
-本前端是 ACCHunter 的用户操作台，负责 APK 上传、任务执行监控、漏洞报告展示、证据查看和全局态势大盘展示。
+本前端是 PierHunter 的用户操作台，负责 APK 上传、任务执行监控、漏洞报告展示、证据查看和全局态势大盘展示。
 
 前端并不直接运行 LibHunter 或 PHunter。它通过后端 API、WebSocket 和报告 JSON 读取数据。
 

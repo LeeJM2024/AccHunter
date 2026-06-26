@@ -21,7 +21,7 @@ from engine.ecosystem_intel import build_ecosystem_summary, refresh_ecosystem_in
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Refresh ACCHunter ecosystem intelligence KB using NVD CVE API.")
+    parser = argparse.ArgumentParser(description="Refresh PierHunter ecosystem intelligence KB using NVD CVE API.")
     parser.add_argument("--no-online", action="store_true", help="Only complete local fallback fields; do not call NVD.")
     parser.add_argument("--no-write", action="store_true", help="Do not write data/ecosystem_intel_kb.json.")
     args = parser.parse_args()

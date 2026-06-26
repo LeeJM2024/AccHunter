@@ -26,7 +26,7 @@ export function ExecutionPage(): JSX.Element {
 
   useEffect(() => {
     if (taskStage !== "REPORT_READY" || !taskId) return;
-    const key = "acchunter:auto-report-opened:first-success";
+    const key = "pierhunter:auto-report-opened:first-success";
     if (window.localStorage.getItem(key)) return;
     window.localStorage.setItem(key, "1");
     const timer = window.setTimeout(() => {

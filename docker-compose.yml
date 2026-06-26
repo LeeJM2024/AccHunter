@@ -1,6 +1,6 @@
 services:
   api:
-    image: acchunter-app:latest
+    image: pierhunter-app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -32,7 +32,7 @@ services:
       INTELLIGENCE_API_TYPE: ${INTELLIGENCE_API_TYPE:-chat_completions}
       INTELLIGENCE_API_URL: ${INTELLIGENCE_API_URL:-}
       INTELLIGENCE_API_KEY: ${INTELLIGENCE_API_KEY:-}
-      INTELLIGENCE_MODEL: ${INTELLIGENCE_MODEL:-acchunter-agent}
+      INTELLIGENCE_MODEL: ${INTELLIGENCE_MODEL:-pierhunter-agent}
       INTELLIGENCE_API_TIMEOUT: ${INTELLIGENCE_API_TIMEOUT:-60}
       INTELLIGENCE_INCLUDE_RAW_RESPONSE: ${INTELLIGENCE_INCLUDE_RAW_RESPONSE:-false}
     ports:
@@ -48,7 +48,7 @@ services:
         condition: service_healthy
 
   worker:
-    image: acchunter-app:latest
+    image: pierhunter-app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -81,7 +81,7 @@ services:
       INTELLIGENCE_API_TYPE: ${INTELLIGENCE_API_TYPE:-chat_completions}
       INTELLIGENCE_API_URL: ${INTELLIGENCE_API_URL:-}
       INTELLIGENCE_API_KEY: ${INTELLIGENCE_API_KEY:-}
-      INTELLIGENCE_MODEL: ${INTELLIGENCE_MODEL:-acchunter-agent}
+      INTELLIGENCE_MODEL: ${INTELLIGENCE_MODEL:-pierhunter-agent}
       INTELLIGENCE_API_TIMEOUT: ${INTELLIGENCE_API_TIMEOUT:-60}
       INTELLIGENCE_INCLUDE_RAW_RESPONSE: ${INTELLIGENCE_INCLUDE_RAW_RESPONSE:-false}
     volumes:

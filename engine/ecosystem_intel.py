@@ -145,7 +145,7 @@ def _fallback_cve_detail(cve_id: str, library_name: str, affected_version_count:
         "android_relevance": "该条目只表示 Android/Java 第三方库生态中的参考风险，不代表当前 APK 已命中。",
         "fix_advice": "建议升级到官方修复版本，并结合 PHunter 补丁存在性验证确认最终 APK 中漏洞代码状态。",
         "references": [f"{NVD_WEB_URL}/{cve_id}", _cve_record_url(cve_id)],
-        "source_basis": "fallback-from-cve_kb; run tools/build_ecosystem_intel_kb.py or enable ACCHUNTER_ECOSYSTEM_ONLINE_REFRESH=1 to enrich from NVD.",
+        "source_basis": "fallback-from-cve_kb; run tools/build_ecosystem_intel_kb.py or enable PIERHUNTER_ECOSYSTEM_ONLINE_REFRESH=1 to enrich from NVD.",
     }
 
 
@@ -248,7 +248,7 @@ def _default_intel_shell() -> dict[str, Any]:
         "source_label": DEFAULT_SOURCE_LABEL,
         "scope": DEFAULT_SCOPE,
         "methodology": DEFAULT_METHODOLOGY,
-        "generated_by": "ACCHunter ecosystem intelligence enrichment",
+        "generated_by": "PierHunter ecosystem intelligence enrichment",
         "cve_details": {},
         "library_details": {},
     }
@@ -373,7 +373,7 @@ def _fetch_nvd_details(cve_ids: list[str], *, timeout: float = 30.0, delay_secon
         return {}, []
 
     api_key = os.getenv("NVD_API_KEY", "").strip()
-    headers = {"User-Agent": "ACCHunter ecosystem intelligence builder/1.0"}
+    headers = {"User-Agent": "PierHunter ecosystem intelligence builder/1.0"}
     if api_key:
         headers["apiKey"] = api_key
 
@@ -438,7 +438,7 @@ def _merge_online_cve_details(raw_intel: dict[str, Any], rows: list[dict[str, An
     raw_intel["source_label"] = DEFAULT_SOURCE_LABEL
     raw_intel["scope"] = DEFAULT_SCOPE
     raw_intel["methodology"] = DEFAULT_METHODOLOGY
-    raw_intel["generated_by"] = "ACCHunter online enrichment using NVD CVE API plus local cve_kb.json"
+    raw_intel["generated_by"] = "PierHunter online enrichment using NVD CVE API plus local cve_kb.json"
     return raw_intel, warnings
 
 
@@ -647,7 +647,7 @@ def _build_tpl_top(rows: list[dict[str, Any]], library_details: dict[str, Any], 
 def _online_refresh_enabled(online_refresh: bool | None) -> bool:
     if online_refresh is not None:
         return online_refresh
-    return os.getenv("ACCHUNTER_ECOSYSTEM_ONLINE_REFRESH", "").strip().lower() in {"1", "true", "yes", "on"}
+    return os.getenv("PIERHUNTER_ECOSYSTEM_ONLINE_REFRESH", "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def build_ecosystem_summary(*, online_refresh: bool | None = None) -> dict[str, Any]:
