@@ -1,11 +1,19 @@
 FROM python:3.11-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PIP_INDEX_URL=http://mirrors.tencentyun.com/pypi/simple \
+    PIP_TRUSTED_HOST=mirrors.tencentyun.com
 
 WORKDIR /app
 
-RUN apt-get update \
+RUN printf '%s\n' \
+        'deb http://mirrors.tencentyun.com/debian bookworm main' \
+        'deb http://mirrors.tencentyun.com/debian bookworm-updates main' \
+        'deb http://mirrors.tencentyun.com/debian-security bookworm-security main' \
+        > /etc/apt/sources.list \
+    && rm -f /etc/apt/sources.list.d/debian.sources \
+    && apt-get update \
     && apt-get install -y --no-install-recommends \
         default-jre-headless \
         gcc \
