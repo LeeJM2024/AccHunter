@@ -20,7 +20,7 @@ services:
       APK_PICKLE_CACHE_DIR: ${APK_PICKLE_CACHE_DIR:-/app/data/apk_pickles_cache}
       SKELETON_PICKLE_CACHE_DIR: ${SKELETON_PICKLE_CACHE_DIR:-/app/data/lib_pickles_skeleton}
       BUCKET_PICKLE_CACHE_DIR: ${BUCKET_PICKLE_CACHE_DIR:-/app/data/lib_pickles_buckets}
-      LIBHUNTER_PROCESSES: ${LIBHUNTER_PROCESSES:-11}
+      LIBHUNTER_PROCESSES: ${LIBHUNTER_PROCESSES:-4}
       PYTHON_BIN: ${PYTHON_BIN:-python3}
       JAVA_BIN: ${JAVA_BIN:-java}
       ANDROID_JAR_PATH: ${ANDROID_JAR_PATH:-/app/PHunter/android-31/android.jar}
@@ -52,7 +52,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    cpus: ${WORKER_CPUS:-11}
+    cpus: ${WORKER_CPUS:-4}
     command: celery -A backend.celery_app.celery_app worker --loglevel=info --concurrency=1
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://scanner:scanner@postgres:5432/scannerdb}
@@ -69,7 +69,7 @@ services:
       APK_PICKLE_CACHE_DIR: ${APK_PICKLE_CACHE_DIR:-/app/data/apk_pickles_cache}
       SKELETON_PICKLE_CACHE_DIR: ${SKELETON_PICKLE_CACHE_DIR:-/app/data/lib_pickles_skeleton}
       BUCKET_PICKLE_CACHE_DIR: ${BUCKET_PICKLE_CACHE_DIR:-/app/data/lib_pickles_buckets}
-      LIBHUNTER_PROCESSES: ${LIBHUNTER_PROCESSES:-11}
+      LIBHUNTER_PROCESSES: ${LIBHUNTER_PROCESSES:-4}
       PYTHON_BIN: ${PYTHON_BIN:-python3}
       JAVA_BIN: ${JAVA_BIN:-java}
       ANDROID_JAR_PATH: ${ANDROID_JAR_PATH:-/app/PHunter/android-31/android.jar}
