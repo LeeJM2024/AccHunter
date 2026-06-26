@@ -359,7 +359,7 @@ def calculate_intersection_ratio(list1: list, list2: list):
 
 
 # Perform a coarse-grained match between an apk and a lib, get the coarse-grained similarity value, a list of all apk classes that have completed the match
-def coarse_match(apk_obj, lib_obj, filter_result, LOGGER):
+def coarse_match(apk_obj, lib_obj, filter_result, LOGGER, class_threshold=class_similar, method_threshold=method_similar):
     # Record the matching relationships of specific methods in each coarse-grained matched class, to be used later at a fine-grained level to determine if these methods are true matches.
     # apk_class_methods_match_dict = {}
     lib_class_match_dict = {}
@@ -465,7 +465,7 @@ def coarse_match(apk_obj, lib_obj, filter_result, LOGGER):
 
                     # if len(apk_method_opcodes) <= 4:
                     #     continue
-                    if sim >= method_similar:
+                    if sim >= method_threshold:
                         # print(f'{apk_method}:{len(apk_method_opcodes)} <--> {lib_method}:{len(lib_method_opcodes)}')
                         # print(f'sim:{sim} mul:{len(apk_method_opcodes)*sim}')
                         # print(f'----------------------------------')
@@ -483,7 +483,7 @@ def coarse_match(apk_obj, lib_obj, filter_result, LOGGER):
                         overlap_str_sim = calculate_intersection_ratio(lib_method_strings, apk_method_strings)
                         overlap_sim = (overlap_op_sim + overlap_str_sim) / 2
 
-                        if overlap_sim >= method_similar:
+                        if overlap_sim >= method_threshold:
                             if apk_method not in methods_tomatch_dict:
                                 methods_tomatch_dict[apk_method] = []
                             methods_tomatch_dict[apk_method].append(lib_method)
@@ -512,7 +512,7 @@ def coarse_match(apk_obj, lib_obj, filter_result, LOGGER):
             class_sim = match_methods_weight / class_weight
 
             # Class coarse-grained matching if the sum of the weights of the matching methods in the apk class / total class weight > threshold
-            if class_sim >= class_similar:
+            if class_sim >= class_threshold:
                 lib_match_classes.add(lib_class)
                 class_match_dict[apk_class] = [methods_match_dict, methods_tomatch_dict]
 
@@ -641,7 +641,7 @@ def get_methods_action(method_list, lib_obj: ThirdLib, Lib_methods_string: dict)
 
 
 # Fine-grained matching
-def fine_match(apk_obj, lib_obj, lib_class_match_dict, LOGGER):
+def fine_match(apk_obj, lib_obj, lib_class_match_dict, LOGGER, method_threshold=method_similar):
     apk_classes_dict = apk_obj.classes_dict
     lib_classes_dict = lib_obj.classes_dict
     lib_pre_methods = set()
@@ -717,7 +717,7 @@ def fine_match(apk_obj, lib_obj, lib_class_match_dict, LOGGER):
                     # if (apk_method == lib_method):
                     #     print(f'{apk_method} {lib_method} {sim}')
                     sim = 0.5 * sim_opc + 0.5 * sim_str
-                    if sim >= method_similar and sim > max_method_sim:
+                    if sim >= method_threshold and sim > max_method_sim:
                         if match_lib_method == " ":
                             match_lib_method = lib_method
                             match_lib_callees = callees
@@ -768,7 +768,14 @@ def fine_match(apk_obj, lib_obj, lib_class_match_dict, LOGGER):
     return lib_class_match_result
 
 
-def detect(apk_obj, lib_obj, LOGGER, return_details: bool = False):
+def detect(
+        apk_obj,
+        lib_obj,
+        LOGGER,
+        return_details: bool = False,
+        lib_threshold=None,
+        class_threshold=None,
+        method_threshold=None):
     '''
     Detecting library information contained in an apk
     :param apk_obj: build apk object
@@ -777,6 +784,13 @@ def detect(apk_obj, lib_obj, LOGGER, return_details: bool = False):
     :return: Dictionary to return detection results
     '''
     lib_name = getattr(lib_obj, "lib_name", "")
+    if lib_threshold is None:
+        lib_threshold = lib_similar
+    if class_threshold is None:
+        class_threshold = class_similar
+    if method_threshold is None:
+        method_threshold = method_similar
+
     pre_match_s = 0.0
     coarse_match_s = 0.0
     fine_match_s = 0.0
@@ -822,7 +836,7 @@ def detect(apk_obj, lib_obj, LOGGER, return_details: bool = False):
 
     # Determine if the pre-match result does not contain
     pre_match_rate = pre_match_opcodes / lib_opcode_num if lib_opcode_num > 0 else 0.0
-    if pre_match_rate < lib_similar:
+    if pre_match_rate < lib_threshold:
         LOGGER.debug("Pre-match failed library: %s, pre-match rate is: %f", lib_obj.lib_name, pre_match_rate)
         if return_details:
             return {
@@ -848,7 +862,9 @@ def detect(apk_obj, lib_obj, LOGGER, return_details: bool = False):
     lib_match_classes, abstract_lib_match_classes, lib_class_match_dict = coarse_match(apk_obj,
                                                                                                        lib_obj,
                                                                                                        filter_result,
-                                                                                                       LOGGER)
+                                                                                                       LOGGER,
+                                                                                                       class_threshold=class_threshold,
+                                                                                                       method_threshold=method_threshold)
     coarse_match_s = time.perf_counter() - coarse_match_start
     for lib_class in lib_class_match_dict:
         if len(lib_class_match_dict[lib_class]) > 1:
@@ -885,7 +901,7 @@ def detect(apk_obj, lib_obj, LOGGER, return_details: bool = False):
     LOGGER.debug("Number of all participating matched classes in the library: %d", len(lib_classes_dict))
 
 
-    if lib_coarse_match_rate < lib_similar:
+    if lib_coarse_match_rate < lib_threshold:
         LOGGER.debug("Coarse match failed library: %s, coarse match rate is: %f", lib_obj.lib_name, lib_coarse_match_rate)
         if return_details:
             return {
@@ -908,7 +924,8 @@ def detect(apk_obj, lib_obj, LOGGER, return_details: bool = False):
     lib_class_match_result = fine_match(apk_obj,
                                         lib_obj,
                                         lib_class_match_dict,
-                                        LOGGER)
+                                        LOGGER,
+                                        method_threshold=method_threshold)
     fine_match_s = time.perf_counter() - fine_match_start
     for lib_class in lib_class_match_result:
         LOGGER.debug("Fine-grained: library class %s → application class %s", lib_class, lib_class_match_result[lib_class][0])
@@ -926,7 +943,7 @@ def detect(apk_obj, lib_obj, LOGGER, return_details: bool = False):
     final_match_opcodes += abstract_match_opcodes
 
     # Adjust the library similarity threshold according to whether the library to be detected is a pure interface library or not
-    min_lib_match = lib_similar
+    min_lib_match = lib_threshold
     if lib_obj.interface_lib:
         min_lib_match = 1.0
 
